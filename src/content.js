@@ -1,5 +1,7 @@
 // Workaround to capture Esc key on certain sites
 var isOpen = false;
+var usingIME = false
+
 document.onkeyup = (e) => {
 	if (e.key == "Escape" && isOpen) {
 		chrome.runtime.sendMessage({request:"close-omni"})
@@ -197,6 +199,9 @@ $(document).ready(() => {
 
 	// Search for an action in the omni
 	function search(e) {
+		if (usingIME) {
+			return
+		}
 		if (e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 13 || e.keyCode == 37) {
 			return;
 		}
@@ -468,6 +473,11 @@ $(document).ready(() => {
 	$(document).on("click", "#open-page-omni-extension-thing", openShortcuts);
 	$(document).on("mouseover", ".omni-extension .omni-item:not(.omni-item-active)", hoverItem);
 	$(document).on("keyup", ".omni-extension input", search);
+	$(document).on("compositionstart", ".omni-extension input", () => {
+		usingIME = true
+	});$(document).on("compositionend", ".omni-extension input", () => {
+		usingIME = false
+	});
 	$(document).on("click", ".omni-item-active", handleAction);
 	$(document).on("click", ".omni-extension #omni-overlay", closeOmni);
 });
