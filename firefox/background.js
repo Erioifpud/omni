@@ -36,7 +36,7 @@ const clearActions = () => {
 			// {title:"New Excel spreadsheet", desc:"Create a new Excel spreadsheet", type:"action", action:"url", url:"https://excel.new", emoji:false, favIconUrl:browser.runtime.getURL("assets/logo-excel.png"), keycheck:false},
 			// {title:"New PowerPoint presentation", desc:"Create a new PowerPoint presentation", type:"action", url:"https://powerpoint.new", action:"url", emoji:false, favIconUrl:browser.runtime.getURL("assets/logo-powerpoint.png"), keycheck:false},
 			// {title:"New Word document", desc:"Create a new Word document", type:"action", action:"url", url:"https://word.new", emoji:false, favIconUrl:browser.runtime.getURL("assets/logo-word.png"), keycheck:false},
-			{title:"Create a whiteboard", desc:"新建协作白板", type:"action", action:"url", url:"https://whiteboard.new", emoji:true, emojiChar:"🧑‍🏫", keycheck:false},
+			{title:"Create a whiteboard", desc:"新建协作白板", type:"action", action:"url", url:"https://whiteboard.new", emoji:true, emojiChar:"📋", keycheck:false},
 			// {title:"Record a video", desc:"Record and edit a video", type:"action", action:"url", url:"https://recording.new", emoji:true, emojiChar:"📹", keycheck:false},
 			// {title:"Create a Figma file", desc:"Create a new Figma file", type:"action", action:"url", url:"https://figma.new", emoji:false, favIconUrl:browser.runtime.getURL("assets/logo-figma.png"), keycheck:false},
 			// {title:"Create a FigJam file", desc:"Create a new FigJam file", type:"action", action:"url", url:"https://figjam.new", emoji:true, emojiChar:"🖌", keycheck:false},
@@ -66,7 +66,7 @@ const clearActions = () => {
 			{title:"Duplicate tab", desc:"复制当前标签页", type:"action", action:"duplicate-tab", emoji:true, emojiChar:"📋", keycheck:true, keys:['⌥','⇧', 'D']},
 			// {title:"Close tab", desc:"Close the current tab", type:"action", action:"close-tab", emoji:true, emojiChar:"🗑", keycheck:true, keys:['⌘','W']},
 			// {title:"Close window", desc:"Close the current window", type:"action", action:"close-window", emoji:true, emojiChar:"💥", keycheck:true, keys:['⌘','⇧', 'W']},
-			{title:"Manage browsing data", desc:"管理浏览器数据", type:"action", action:"manage-data", emoji:true, emojiChar:"🔬", keycheck:true, keys:['⌘','⇧', 'Delete']},
+			// {title:"Manage browsing data", desc:"管理浏览器数据", type:"action", action:"manage-data", emoji:true, emojiChar:"🔬", keycheck:true, keys:['⌘','⇧', 'Delete']},
 			// {title:"Clear all browsing data", desc:"Clear all of your browsing data", type:"action", action:"remove-all", emoji:true, emojiChar:"🧹", keycheck:false, keys:['⌘','D']},
 			// {title:"Clear browsing history", desc:"Clear all of your browsing history", type:"action", action:"remove-history", emoji:true, emojiChar:"🗂", keycheck:false, keys:['⌘','D']},
 			// {title:"Clear cookies", desc:"Clear all cookies", type:"action", action:"remove-cookies", emoji:true, emojiChar:"🍪", keycheck:false, keys:['⌘','D']},
@@ -214,8 +214,9 @@ const resetOmni = () => {
 	getTabs();
 	getBookmarks();
 	var search = [
-		{title:"Search", desc:"Search for a query", type:"action", action:"search", emoji:true, emojiChar:"🔍", keycheck:false},
-		{title:"Search", desc:"Go to website", type:"action", action:"goto", emoji:true, emojiChar:"🔍", keycheck:false}
+		{title:"Search", desc:"Search for a query", type:"action", action:"search", emoji:true, emojiChar:"🔍", keycheck:false, defaultHide: true},
+		{title:"Hitomi Search", desc:"Search in hitomi.la", type:"action", action:"search-hitomi", emoji:true, emojiChar:"🔍", keycheck:false, defaultHide: true},
+		{title:"Search", desc:"Go to website", type:"action", action:"goto", emoji:true, emojiChar:"🔍", keycheck:false, defaultHide: true}
 	];
 	actions = search.concat(actions);
 }
@@ -484,6 +485,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			getCurrentTab().then((response) => {
 				browser.tabs.sendMessage(response.id, {request: "close-omni"});
 			});
+			break;
+		case "search-hitomi":
+			browser.tabs.create({
+				url: `https://www.google.com/search?q=hitomi.la ${message.query}`
+			})
 			break;
 		}
 });

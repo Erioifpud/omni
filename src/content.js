@@ -34,7 +34,7 @@ $(document).ready(() => {
 
 	function renderAction(action, index, keys, img) {
 		var skip = "";
-		if (action.action == "search" || action.action == "goto") {
+		if (action.defaultHide || action.action == "goto") {
 			skip = "style='display:none'";
 		}
 		if (index != 0) {
@@ -204,8 +204,11 @@ $(document).ready(() => {
 		checkShortHand(e, value);
 		value = $(this).val().toLowerCase();
 		if (value.startsWith("/history")) {
-			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+			actions.forEach((action, index) => {
+				if (action.defaultHide) {
+					$(".omni-item[data-index='"+index+"']").hide();
+				}
+			})
 			var tempvalue = value.replace("/history ", "");
 			var query = "";
 			if (tempvalue != "/history") {
@@ -215,8 +218,11 @@ $(document).ready(() => {
 				populateOmniFilter(response.history);
 			});
 		} else if (value.startsWith("/bookmarks")) {
-			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+			actions.forEach((action, index) => {
+				if (action.defaultHide) {
+					$(".omni-item[data-index='"+index+"']").hide();
+				}
+			})
 			var tempvalue = value.replace("/bookmarks ", "");
 			if (tempvalue != "/bookmarks" && tempvalue != "") {
 				var query = value.replace("/bookmarks ", "");
@@ -233,8 +239,11 @@ $(document).ready(() => {
 			}
 			$(".omni-extension #omni-list .omni-item").filter(function(){
 				if (value.startsWith("/tabs")) {
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+					actions.forEach((action, index) => {
+						if (action.defaultHide) {
+							$(".omni-item[data-index='"+index+"']").hide();
+						}
+					})
 					var tempvalue = value.replace("/tabs ", "");
 					if (tempvalue == "/tabs") {
 						$(this).toggle($(this).attr("data-type") == "tab");
@@ -243,8 +252,11 @@ $(document).ready(() => {
 						$(this).toggle(($(this).find(".omni-item-name").text().toLowerCase().indexOf(tempvalue) > -1 || $(this).find(".omni-item-desc").text().toLowerCase().indexOf(tempvalue) > -1) && $(this).attr("data-type") == "tab");
 					}
 				} else if (value.startsWith("/remove")) {
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+					actions.forEach((action, index) => {
+						if (action.defaultHide) {
+							$(".omni-item[data-index='"+index+"']").hide();
+						}
+					})
 					var tempvalue = value.replace("/remove ", "")
 					if (tempvalue == "/remove") {
 						$(this).toggle($(this).attr("data-type") == "bookmark" || $(this).attr("data-type") == "tab");
@@ -253,8 +265,11 @@ $(document).ready(() => {
 						$(this).toggle(($(this).find(".omni-item-name").text().toLowerCase().indexOf(tempvalue) > -1 || $(this).find(".omni-item-desc").text().toLowerCase().indexOf(tempvalue) > -1) && ($(this).attr("data-type") == "bookmark" || $(this).attr("data-type") == "tab"));
 					}
 				} else if (value.startsWith("/actions")) {
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-					$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+					actions.forEach((action, index) => {
+						if (action.defaultHide) {
+							$(".omni-item[data-index='"+index+"']").hide();
+						}
+					})
 					var tempvalue = value.replace("/actions ", "")
 					if (tempvalue == "/actions") {
 						$(this).toggle($(this).attr("data-type") == "action");
@@ -265,8 +280,11 @@ $(document).ready(() => {
 				} else {
 					$(this).toggle($(this).find(".omni-item-name").text().toLowerCase().indexOf(value) > -1 || $(this).find(".omni-item-desc").text().toLowerCase().indexOf(value) > -1);
 					if (value == "") {
-						$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
-						$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
+						actions.forEach((action, index) => {
+							if (action.defaultHide) {
+								$(".omni-item[data-index='"+index+"']").hide();
+							}
+						})
 					} else if (!validURL(value)) {
 						$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").show();
 						$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
